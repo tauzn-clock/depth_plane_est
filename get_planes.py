@@ -28,7 +28,6 @@ def get_planes(depth, INTRINSICS, ANGLE_CLUSTER, RATIO_SIZE):
     for i in range(ANGLE_INCREMENT):
         for j in range(ANGLE_INCREMENT):
             dillation[i, j] = np.max(angle_cluster[i:i+KERNEL_2D, j:j+KERNEL_2D])
-
     angle_cluster = angle_cluster[KERNEL_2D//2:-KERNEL_2D//2+1, KERNEL_2D//2:-KERNEL_2D//2+1]
     
     # Find index where angle_cluster is equal to dillation
@@ -46,26 +45,18 @@ def get_planes(depth, INTRINSICS, ANGLE_CLUSTER, RATIO_SIZE):
         
         grav_normal = np.array([np.tan(angle_x), np.tan(angle_y), 1])
         grav_normal = grav_normal / np.linalg.norm(grav_normal)
-
-        img_normal_pos = normal.reshape(-1, 3)
-        img_normal_neg = -img_normal_pos
-        dot1 = np.dot(img_normal_pos, grav_normal).reshape(-1, 1)
-        dot2 = np.dot(img_normal_neg, grav_normal).reshape(-1, 1)
         
-        dot = np.concatenate((dot1, dot2), axis=1)
-        normal_index = np.argmax(dot, axis=1)
-        img_normal = np.zeros_like(img_normal_pos)
-        img_normal[normal_index == 0] = img_normal_pos[normal_index == 0]
-        img_normal[normal_index == 1] = img_normal_neg[normal_index == 1]
-
         dot_bound = 0.9
         correction_iteration = 5
-        grav_normal = orientation_correction(grav_normal, normal.reshape(-1,3), dot_bound, correction_iteration)
-
         kernel_size = 11
         cluster_size = 11
+        
+        grav_normal = orientation_correction(grav_normal, normal.reshape(-1,3), dot_bound, correction_iteration)
+        
+        normal_abs = normal.reshape(-1, 3)
+        normal_abs = normal_abs * np.where(np.dot(normal_abs, grav_normal) >= 0, 1, -1).reshape(-1, 1)
 
-        mask_2d = get_mask(grav_normal, img_normal.reshape(-1,3), points.reshape(-1,3), dot_bound, kernel_size, cluster_size, RATIO_SIZE=RATIO_SIZE)
+        mask_2d = get_mask(grav_normal, normal_abs.reshape(-1,3), points.reshape(-1,3), dot_bound, kernel_size, cluster_size, RATIO_SIZE=RATIO_SIZE)
         mask_2d = mask_2d.reshape(H, W)
         mask = np.where(mask_2d != 0, mask_2d + mask.max(), mask)
         
@@ -75,11 +66,8 @@ def get_mask(grav_normal, img_normal, pts_3d, dot_bound, kernel_size, cluster_si
     mask = np.zeros(len(img_normal), dtype=np.uint8)
     index = np.array([i for i in range(len(img_normal))])
 
-    dot1 = np.dot(img_normal, grav_normal).reshape(-1,1)
-    dot2 = np.dot(img_normal, -grav_normal).reshape(-1,1)
-
-    angle_dist = np.concatenate((dot1, dot2), axis=1)
-    angle_dist = np.max(angle_dist, axis=1)
+    angle_dist = np.dot(img_normal, grav_normal)
+    angle_dist = np.abs(angle_dist)
     scalar_dist = np.dot(pts_3d, grav_normal)
     scalar_dist[angle_dist < dot_bound] = 0
     scalar_dist[pts_3d[:, 2] == 0] = 0
