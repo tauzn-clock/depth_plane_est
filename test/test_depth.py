@@ -2,10 +2,9 @@ import os
 import sys
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
-from process_depth import get_normal
-
 import numpy as np
 from PIL import Image
+import matplotlib.pyplot as plt
 
 img = Image.open(os.path.join(os.path.dirname(os.path.abspath(__file__)),"rgb.png"))
 img = np.array(img)
@@ -19,8 +18,13 @@ intrinsic = [306.9346923828125,
              198.37969970703125,
             ]
 
+from process_depth import get_normal
 normal = get_normal(depth, intrinsic)
 
-import matplotlib.pyplot as plt
-
 plt.imsave("normal.png", (normal + 1) / 2.0)
+
+from get_planes import get_planes
+mask = get_planes(depth, intrinsic, 3, 0.02)
+
+from mask_to_hsv import mask_to_hsv
+plt.imsave("mask.png", mask_to_hsv(mask))
