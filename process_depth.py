@@ -1,7 +1,7 @@
 import numpy as np
 
 def get_3d(depth, INTRINSICS):
-    W, H = depth.shape
+    H, W = depth.shape
     depth = depth.flatten()
     # Generate a grid of (x, y) coordinates
     x, y = np.meshgrid(np.arange(W), np.arange(H))
