@@ -1,2 +1,5 @@
+python/build
 __pycache__
+*egg-info
+
 *.png
