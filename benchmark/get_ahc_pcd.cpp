@@ -136,13 +136,15 @@ int main(int argc, char** argv)
 {
     std::cout << argv[1] << std::endl;
 
-    config = YAML::LoadFile("/catkin_ws/src/pcl_test/cpp/ahc.yaml");
-
     // Initialize ROS
     ros::init(argc, argv, "get_ahc_pcd");
 
     // Create a node handle
     ros::NodeHandle nh;
+
+	std::string yaml_path;
+    nh.getParam("get_ahc_pcd/yaml_path", yaml_path);
+    config = YAML::LoadFile(yaml_path);
 
     ros::Subscriber camera_info_sub = nh.subscribe("/camera/depth/camera_info", 1, cameraInfoCallback);
     ros::Subscriber depth_image_sub = nh.subscribe("/camera/depth/image_raw", 10, depthImageCallback);
