@@ -59,7 +59,8 @@ def get_planes(depth, normal, INTRINSICS, ANGLE_CLUSTER, RATIO_SIZE):
         new_mask, new_param = get_mask(grav_normal, normal_abs.reshape(-1,3), points.reshape(-1,3), dot_bound, kernel_size, cluster_size, RATIO_SIZE=RATIO_SIZE)
         new_mask = new_mask.reshape(H, W)
         mask = np.where(new_mask != 0, new_mask + mask.max(), mask)
-        param = np.concatenate((param, new_param), axis=0) if param.size else new_param
+        if new_param.size:
+            param = np.concatenate((param, new_param), axis=0) if param.size else new_param
         
     return mask, param
 
