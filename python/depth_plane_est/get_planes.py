@@ -1,6 +1,6 @@
 import numpy as np
-from .process_depth import get_3d, get_normal
-from .orientation_correction import orientation_correction
+from process_depth import get_3d, get_normal
+from orientation_correction import orientation_correction
 
 def get_planes(depth, INTRINSICS, ANGLE_CLUSTER, RATIO_SIZE):
     H, W = depth.shape
@@ -38,6 +38,7 @@ def get_planes(depth, INTRINSICS, ANGLE_CLUSTER, RATIO_SIZE):
     best_peaks_index = np.array([index[0][best_peaks], index[1][best_peaks]]).T
 
     mask = np.zeros_like(depth, dtype=np.int8)
+    param = np.array([])
 
     for i in range(best_peaks_index.shape[0]):
         angle_x = (best_peaks_index[i][0] - ANGLE_INCREMENT//2) * np.pi / ANGLE_INCREMENT
@@ -56,14 +57,16 @@ def get_planes(depth, INTRINSICS, ANGLE_CLUSTER, RATIO_SIZE):
         normal_abs = normal.reshape(-1, 3)
         normal_abs = normal_abs * np.where(np.dot(normal_abs, grav_normal) >= 0, 1, -1).reshape(-1, 1)
 
-        mask_2d = get_mask(grav_normal, normal_abs.reshape(-1,3), points.reshape(-1,3), dot_bound, kernel_size, cluster_size, RATIO_SIZE=RATIO_SIZE)
-        mask_2d = mask_2d.reshape(H, W)
-        mask = np.where(mask_2d != 0, mask_2d + mask.max(), mask)
+        new_mask, new_param = get_mask(grav_normal, normal_abs.reshape(-1,3), points.reshape(-1,3), dot_bound, kernel_size, cluster_size, RATIO_SIZE=RATIO_SIZE)
+        new_mask = new_mask.reshape(H, W)
+        mask = np.where(new_mask != 0, new_mask + mask.max(), mask)
+        param = np.concatenate((param, new_param), axis=0) if param.size else new_param
         
-    return mask
+    return mask, param
 
 def get_mask(grav_normal, img_normal, pts_3d, dot_bound, kernel_size, cluster_size, bin_size=0.01, RATIO_SIZE=0.1):
     mask = np.zeros(len(img_normal), dtype=np.uint8)
+    param = []
     index = np.array([i for i in range(len(img_normal))])
 
     angle_dist = np.dot(img_normal, grav_normal)
@@ -118,7 +121,8 @@ def get_mask(grav_normal, img_normal, pts_3d, dot_bound, kernel_size, cluster_si
         
         if np.sum(tmp_mask)/ len(tmp_mask) > RATIO_SIZE:
             mask = np.where(tmp_mask != 0, tmp_mask, mask)
+            param.append(np.array([grav_normal[0], grav_normal[1], grav_normal[2], bin_edges[best_peaks_index[i]]]))
         else:
             break
-    
-    return mask
+        
+    return mask, np.array(param)
