@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(plane_detection)
+project(depth_plane_est)
 
 # Find catkin and dependencies
 find_package(catkin REQUIRED COMPONENTS
