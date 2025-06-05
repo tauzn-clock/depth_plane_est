@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 
-DATA_DIR = "/scratchdata/processed/stair4"
+DATA_DIR = "/scratchdata/processed/alcove2"
 
 with open(os.path.join(DATA_DIR, "camera_info.json"), "r") as f:
     data = json.load(f)
@@ -19,7 +19,17 @@ depth = Image.open(os.path.join(DATA_DIR, "depth", f"{INDEX}.png"))
 
 rgb = np.array(rgb)
 depth = np.array(depth) / 1000.0  # Convert to meters and scale
-#depth = depth / 10.0 #depth.max()
+depth = depth #/ 10.0 #depth.max()
+
+import torch
+print(torch.cuda.is_available())
+
+from run_metric3d import run_metric3d
+metric3d_depth, metric3d_normal = run_metric3d(rgb)
+plt.imsave("metric3d_depth.png", metric3d_depth)
+plt.imsave("metric3d_normal.png", (metric3d_normal + 1) / 2.0)
+
+exit()
 
 from depth_plane_est.process_depth import get_normal
 normal = get_normal(depth, INTRINSICS)
