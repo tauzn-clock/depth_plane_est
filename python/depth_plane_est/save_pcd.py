@@ -1,7 +1,7 @@
 import open3d as o3d
 import numpy as np
-from mask_to_hsv import mask_to_hsv
-from projected_convex_hull import projected_convex_hull
+from .mask_to_hsv import mask_to_hsv
+from .projected_convex_hull import projected_convex_hull
 
 def save_pcd(img, pcd, path): 
     img = img.reshape(-1, 3)
