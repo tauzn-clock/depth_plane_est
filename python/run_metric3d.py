@@ -1,6 +1,7 @@
 import torch
 from PIL import Image
 import numpy as np
+from skimage.transform import resize
 
 def run_metric3d(rgb):
     rgb = torch.from_numpy(np.array(rgb)).permute(2, 0, 1).unsqueeze(0).float() / 255.0
@@ -13,9 +14,12 @@ def run_metric3d(rgb):
     normal_confidence = output_dict['prediction_normal'][:, 3, :, :] # see https://arxiv.org/abs/2109.09881 for details
 
     # Visualize depth
-    output_depth = pred_depth[0, 0].cpu().numpy()[2:-2,2:-2]
-    output_normal = pred_normal[0,:].cpu().numpy().transpose(1,2,0)[2:-2,2:-2]
-
+    W, H = rgb.shape[3], rgb.shape[2]
+    output_depth = pred_depth[0, 0].cpu().numpy()
+    output_depth = resize(output_depth, (H, W), anti_aliasing=True)
+    output_normal = pred_normal[0,:].cpu().numpy().transpose(1,2,0)
+    output_normal = resize(output_normal, (H, W), anti_aliasing=True)
+    
     return output_depth, output_normal
 
 
