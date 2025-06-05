@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 
-DATA_DIR = "/scratchdata/processed/alcove2"
+DATA_DIR = "/scratchdata/nyu_plane"
 
 with open(os.path.join(DATA_DIR, "camera_info.json"), "r") as f:
     data = json.load(f)
@@ -21,15 +21,12 @@ rgb = np.array(rgb)
 depth = np.array(depth) / 1000.0  # Convert to meters and scale
 depth = depth #/ 10.0 #depth.max()
 
-import torch
-print(torch.cuda.is_available())
-
 from run_metric3d import run_metric3d
 metric3d_depth, metric3d_normal = run_metric3d(rgb)
+metric3d_normal = metric3d_normal * np.where(metric3d_normal[:,:,2]> 0, 1, -1)[..., np.newaxis]
+
 plt.imsave("metric3d_depth.png", metric3d_depth)
 plt.imsave("metric3d_normal.png", (metric3d_normal + 1) / 2.0)
-
-exit()
 
 from depth_plane_est.process_depth import get_normal
 normal = get_normal(depth, INTRINSICS)
@@ -37,7 +34,8 @@ normal = get_normal(depth, INTRINSICS)
 plt.imsave("normal.png", (normal + 1) / 2.0)
 
 from depth_plane_est.get_planes import get_planes
-mask, param = get_planes(depth, normal, INTRINSICS, 3, 0.02)
+mask, param = get_planes(depth, metric3d_normal, INTRINSICS, 3, 0.02)
+print(mask.max())
 
 from depth_plane_est.mask_to_hsv import mask_to_hsv
 plt.imsave("mask.png", mask_to_hsv(mask))
