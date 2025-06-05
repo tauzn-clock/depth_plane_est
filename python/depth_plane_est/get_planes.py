@@ -1,6 +1,6 @@
 import numpy as np
-from process_depth import get_3d, get_normal
-from orientation_correction import orientation_correction
+from .process_depth import get_3d, get_normal
+from .orientation_correction import orientation_correction
 
 def get_planes(depth, normal, INTRINSICS, ANGLE_CLUSTER, RATIO_SIZE):
     H, W = depth.shape
