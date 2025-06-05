@@ -2,10 +2,9 @@ import numpy as np
 from process_depth import get_3d, get_normal
 from orientation_correction import orientation_correction
 
-def get_planes(depth, INTRINSICS, ANGLE_CLUSTER, RATIO_SIZE):
+def get_planes(depth, normal, INTRINSICS, ANGLE_CLUSTER, RATIO_SIZE):
     H, W = depth.shape
     points = get_3d(depth, INTRINSICS)
-    normal = get_normal(depth, INTRINSICS)
         
     ANGLE_INCREMENT = 37 # Divide into 5 deg bins
     KERNEL_2D = 5 # Extract max in 20 deg range
