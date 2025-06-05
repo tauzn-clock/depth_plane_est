@@ -1,2 +1,7 @@
 torch
+torchvision
 open3d
+mmengine
+mmcv-lite
+timm
+scikit-image
