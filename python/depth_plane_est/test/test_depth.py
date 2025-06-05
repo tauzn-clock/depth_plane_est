@@ -25,7 +25,13 @@ plt.imsave("normal.png", (normal + 1) / 2.0)
 
 from get_planes import get_planes
 mask, param = get_planes(depth, intrinsic, 3, 0.02)
-print(param)
 
 from mask_to_hsv import mask_to_hsv
 plt.imsave("mask.png", mask_to_hsv(mask))
+
+from save_pcd import save_pcd
+from process_depth import get_3d
+save_pcd(img, get_3d(depth, intrinsic), "output.ply")
+
+from save_pcd import save_planes
+save_planes(get_3d(depth, intrinsic), mask, param, "planes.ply")
