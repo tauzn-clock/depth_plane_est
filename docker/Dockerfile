@@ -33,5 +33,4 @@ RUN /bin/bash -c "cd src && git clone https://github.com/tauzn-clock/depth_plane
 RUN /bin/bash -c "source /opt/ros/noetic/setup.bash && catkin build"
 RUN echo "source /catkin_ws/devel/setup.bash" >> ~/.bashrc
 
-RUN pip3 install --upgrade pip
 RUN pip3 install -r /catkin_ws/src/depth_plane_est/python/requirements.txt
