@@ -57,10 +57,13 @@ def get_normal_svd(depth, INTRINSICS, kernel_size=3):
             if len(patch) < kernel_size**2 // 2:
                 continue
             cov_matrix = np.cov(patch.T)
-            _, _, vh = np.linalg.svd(cov_matrix)
-            normal[i-kernel_size//2, j-kernel_size//2] = vh[2]
+            _, s, vh = np.linalg.svd(cov_matrix)
+            if s[2] / s[1] < 0.1:  # Check if the second singular value is much smaller than the third
+                normal[i-kernel_size//2, j-kernel_size//2] = vh[2]
 
     normal = normal / (np.linalg.norm(normal, axis=2, keepdims=True) + 1e-16)
     normal[depth == 0] = 0
+
+    normal = normal * np.where(normal[:, :, 2] >= 0, 1, -1).reshape(H, W, 1)
 
     return normal
