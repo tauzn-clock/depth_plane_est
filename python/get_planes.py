@@ -38,17 +38,13 @@ from depth_plane_est.get_planes import get_planes
 mask, param = get_planes(depth, normal, INTRINSICS, 5, 0.02)
 print(mask.max())
 
-from post_process import remove_small_masks
-BOUND = 0.02
-mask, param = remove_small_masks(mask, param, BOUND)
-print(mask.max())
-
 from depth_plane_est.mask_to_hsv import mask_to_hsv
 plt.imsave("mask.png", mask_to_hsv(mask))
 
 from depth_plane_est.save_pcd import save_pcd
 from depth_plane_est.process_depth import get_3d
 save_pcd(rgb, get_3d(depth, INTRINSICS), f"{DATA_DIR}/output.ply")
+save_pcd(mask_to_hsv(mask), get_3d(depth, INTRINSICS), f"{DATA_DIR}/mask.ply")
 
 from depth_plane_est.save_pcd import save_planes
 save_planes(get_3d(depth, INTRINSICS), mask, param, f"{DATA_DIR}/planes.ply")

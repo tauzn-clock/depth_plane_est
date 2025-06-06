@@ -61,8 +61,19 @@ def get_planes(depth, normal, INTRINSICS, ANGLE_CLUSTER, RATIO_SIZE):
         mask = np.where((new_mask != 0), new_mask + mask.max(), mask)
         if new_param.size:
             param = np.concatenate((param, new_param), axis=0) if param.size else new_param
-        
-    return mask, param
+
+    # Post processing to remove small mask
+    new_mask = np.zeros_like(mask, dtype=np.int8)
+    new_param = []
+
+    for i in range(len(param)):
+        mask_i = (mask == i + 1)
+        if np.sum(mask_i) < RATIO_SIZE * W * H:
+            continue
+        new_mask[mask_i] = new_mask.max() + 1
+        new_param.append(param[i])
+
+    return new_mask, np.array(new_param)
 
 def get_mask(grav_normal, img_normal, pts_3d, dot_bound, kernel_size, cluster_size, bin_size=0.01, RATIO_SIZE=0.1):
     mask = np.zeros(len(img_normal), dtype=np.uint8)
@@ -122,16 +133,14 @@ def get_mask(grav_normal, img_normal, pts_3d, dot_bound, kernel_size, cluster_si
                 tmp_mask[index[j]] = i + 1
         
         if np.sum(tmp_mask)/ len(tmp_mask) > RATIO_SIZE:
-            mask = np.where(tmp_mask != 0, tmp_mask, mask)
-            param.append(np.array([grav_normal[0], grav_normal[1], grav_normal[2], bin_edges[best_peaks_index[i]]]))
-            #mask = np.where(tmp_mask != 0, mask.max()+1, mask)
-            #masked_pts = pts_3d[tmp_mask.flatten() != 0]
-            #param.append(estimate_plane_param_svd(masked_pts))
+            #mask = np.where(tmp_mask != 0, tmp_mask, mask)
+            #param.append(np.array([grav_normal[0], grav_normal[1], grav_normal[2], bin_edges[best_peaks_index[i]]]))
+            mask = np.where(tmp_mask != 0, mask.max()+1, mask)
+            masked_pts = pts_3d[tmp_mask.flatten() != 0]
+            param.append(estimate_plane_param_svd(masked_pts))
         else:
             break
         
-    print(mask.max(), len(param))
-
     return mask, np.array(param)
 
 def estimate_plane_param_svd(pcd):
