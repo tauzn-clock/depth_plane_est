@@ -18,8 +18,8 @@ intrinsic = [306.9346923828125,
 import sys
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),".."))
 
-from depth_plane_est.process_depth import get_normal
-normal = get_normal(depth, intrinsic)
+from depth_plane_est.process_depth import get_normal_adj
+normal = get_normal_adj(depth, intrinsic)
 
 plt.imsave("normal.png", (normal + 1) / 2.0)
 

@@ -22,7 +22,7 @@ def get_3d(depth, INTRINSICS):
     
     return points
 
-def get_normal(depth, INTRINSICS):
+def get_normal_adj(depth, INTRINSICS):
     H, W = depth.shape
     points = get_3d(depth, INTRINSICS)
     points = points.reshape(H, W, 3)

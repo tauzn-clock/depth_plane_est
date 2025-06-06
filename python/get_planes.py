@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 
-DATA_DIR = "/scratchdata/nyu_plane"
+DATA_DIR = "/scratchdata/processed/stair4"
 
 with open(os.path.join(DATA_DIR, "camera_info.json"), "r") as f:
     data = json.load(f)
@@ -28,8 +28,8 @@ metric3d_normal = metric3d_normal * np.where(metric3d_normal[:,:,2]> 0, 1, -1)[.
 plt.imsave("metric3d_depth.png", metric3d_depth)
 plt.imsave("metric3d_normal.png", (metric3d_normal + 1) / 2.0)
 
-from depth_plane_est.process_depth import get_normal
-normal = get_normal(depth, INTRINSICS)
+from depth_plane_est.process_depth import get_normal_adj
+normal = get_normal_adj(depth, INTRINSICS)
 
 plt.imsave("normal.png", (normal + 1) / 2.0)
 

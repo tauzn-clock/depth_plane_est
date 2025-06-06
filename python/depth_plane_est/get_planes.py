@@ -1,5 +1,5 @@
 import numpy as np
-from .process_depth import get_3d, get_normal
+from .process_depth import get_3d
 from .orientation_correction import orientation_correction
 
 def get_planes(depth, normal, INTRINSICS, ANGLE_CLUSTER, RATIO_SIZE):
