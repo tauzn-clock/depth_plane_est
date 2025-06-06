@@ -35,7 +35,7 @@ normal = get_normal_svd(depth, INTRINSICS, kernel_size=21)
 plt.imsave("normal.png", (normal + 1) / 2.0)
 
 from depth_plane_est.get_planes import get_planes
-mask, param = get_planes(depth, normal, INTRINSICS, 3, 0.02)
+mask, param = get_planes(depth, normal, INTRINSICS, 5, 0.02)
 print(mask.max())
 
 from post_process import remove_small_masks

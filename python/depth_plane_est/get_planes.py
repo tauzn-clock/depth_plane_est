@@ -69,8 +69,10 @@ def get_mask(grav_normal, img_normal, pts_3d, dot_bound, kernel_size, cluster_si
     param = []
     index = np.array([i for i in range(len(img_normal))])
 
+    #Is this required?
+    img_normal = img_normal * np.where(np.linalg.norm(img_normal, axis=1) > 0, 1, -1).reshape(-1, 1)
+
     angle_dist = np.dot(img_normal, grav_normal)
-    angle_dist = np.abs(angle_dist)
     scalar_dist = np.dot(pts_3d, grav_normal)
     scalar_dist[angle_dist < dot_bound] = 0
     scalar_dist[pts_3d[:, 2] == 0] = 0

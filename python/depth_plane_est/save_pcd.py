@@ -82,8 +82,6 @@ def save_normal(pcd, normal, path):
             cylinder_radius=0.01, cone_radius=0.02, cylinder_height=0.1, cone_height=0.05)
         tf = np.eye(4)
         tf[:3, :3] = rotation_matrix_from_vectors(np.array([0, 0, 1]), direction)
-        # Calculate det
-        print("Determinant:", np.linalg.det(tf[:3, :3]))
         tf[:3, 3] = start
         arrow.transform(tf)
         arrow.paint_uniform_color([1, 0, 0])  # Red color for the arrows
