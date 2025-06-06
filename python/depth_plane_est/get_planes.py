@@ -49,7 +49,7 @@ def get_planes(depth, normal, INTRINSICS, ANGLE_CLUSTER, RATIO_SIZE):
         dot_bound = 0.9
         correction_iteration = 5
         kernel_size = 11
-        cluster_size = 11
+        cluster_size = 5
         
         grav_normal = orientation_correction(grav_normal, normal.reshape(-1,3), dot_bound, correction_iteration)
         
