@@ -40,3 +40,27 @@ def get_normal_adj(depth, INTRINSICS):
     normal = normal * np.where(normal[:, :, 2] >= 0, 1, -1).reshape(H, W, 1)
     
     return normal
+
+def get_normal_svd(depth, INTRINSICS, kernel_size=3):
+    H, W = depth.shape
+    points = get_3d(depth, INTRINSICS)
+    points = points.reshape(H, W, 3)
+
+    # Pad points along the edges
+    points = np.pad(points, ((kernel_size//2, kernel_size//2), (kernel_size//2, kernel_size//2), (0, 0)))
+    normal = np.zeros((H, W, 3))
+
+    for i in range(kernel_size//2, H + kernel_size//2):
+        for j in range(kernel_size//2, W + kernel_size//2):
+            patch = points[i-kernel_size//2:i+kernel_size//2+1, j-kernel_size//2:j+kernel_size//2+1, :].reshape(-1, 3)
+            patch = patch[patch[:, 2] > 0]
+            if len(patch) < kernel_size**2 // 2:
+                continue
+            cov_matrix = np.cov(patch.T)
+            _, _, vh = np.linalg.svd(cov_matrix)
+            normal[i-kernel_size//2, j-kernel_size//2] = vh[2]
+
+    normal = normal / (np.linalg.norm(normal, axis=2, keepdims=True) + 1e-16)
+    normal[depth == 0] = 0
+
+    return normal
