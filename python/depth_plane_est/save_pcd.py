@@ -44,7 +44,7 @@ def save_planes(pcd, mask, param, path):
     
     mesh = o3d.geometry.TriangleMesh()
     
-    for i in range(mask.max()):
+    for i in range(len(param)):
         plane_pcd = pcd[mask.flatten() == (i+1)]
         plane_color = color[mask == (i+1)]
         plane_param = param[i]

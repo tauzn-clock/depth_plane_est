@@ -58,7 +58,7 @@ def get_planes(depth, normal, INTRINSICS, ANGLE_CLUSTER, RATIO_SIZE):
 
         new_mask, new_param = get_mask(grav_normal, normal_abs.reshape(-1,3), points.reshape(-1,3), dot_bound, kernel_size, cluster_size, RATIO_SIZE=RATIO_SIZE)
         new_mask = new_mask.reshape(H, W)
-        mask = np.where((new_mask != 0) & (mask == 0), new_mask + mask.max(), mask)
+        mask = np.where((new_mask != 0), new_mask + mask.max(), mask)
         if new_param.size:
             param = np.concatenate((param, new_param), axis=0) if param.size else new_param
         
@@ -124,7 +124,37 @@ def get_mask(grav_normal, img_normal, pts_3d, dot_bound, kernel_size, cluster_si
         if np.sum(tmp_mask)/ len(tmp_mask) > RATIO_SIZE:
             mask = np.where(tmp_mask != 0, tmp_mask, mask)
             param.append(np.array([grav_normal[0], grav_normal[1], grav_normal[2], bin_edges[best_peaks_index[i]]]))
+            #mask = np.where(tmp_mask != 0, mask.max()+1, mask)
+            #masked_pts = pts_3d[tmp_mask.flatten() != 0]
+            #param.append(estimate_plane_param_svd(masked_pts))
         else:
             break
         
+    print(mask.max(), len(param))
+
     return mask, np.array(param)
+
+def estimate_plane_param_svd(pcd):
+    """
+    Estimate plane parameters using Singular Value Decomposition (SVD)
+    :param pcd: Point cloud data
+    :return: Plane parameters [a, b, c, d] where ax + by + cz + d = 0
+    """
+    # Compute the centroid of the point cloud
+    centroid = np.mean(pcd, axis=0)
+
+    # Center the point cloud
+    centered_pcd = pcd - centroid
+
+    # Perform SVD
+    covariance_matrix = np.dot(centered_pcd.T, centered_pcd)
+    _, _, vh = np.linalg.svd(covariance_matrix)
+
+    # The normal vector is the last row of vh
+    normal = vh[-1]
+
+    # Calculate d using the plane equation ax + by + cz + d = 0
+    d = np.dot(normal, centroid)
+
+
+    return np.append(normal, d)

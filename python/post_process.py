@@ -7,7 +7,7 @@ def remove_small_masks(mask, param, bound):
     new_param = []
 
     for i in range(len(param)):
-        mask_i = mask == i + 1
+        mask_i = (mask == i + 1)
         if np.sum(mask_i) < bound * W * H:
             continue
         new_mask[mask_i] = new_mask.max() + 1
