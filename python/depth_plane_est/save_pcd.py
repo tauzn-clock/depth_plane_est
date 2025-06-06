@@ -71,8 +71,6 @@ def save_normal(pcd, normal, path):
     pcd = pcd[::10]
     normal = normal[::10]
 
-    print(pcd.shape, normal.shape)
-
     mesh = o3d.geometry.TriangleMesh()
     
     for i in range(len(pcd)):

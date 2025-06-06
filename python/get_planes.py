@@ -51,7 +51,7 @@ from depth_plane_est.process_depth import get_3d
 save_pcd(rgb, get_3d(depth, INTRINSICS), f"{DATA_DIR}/output.ply")
 
 from depth_plane_est.save_pcd import save_planes
-#save_planes(get_3d(depth, INTRINSICS), mask, param, f"{DATA_DIR}/planes.ply")
+save_planes(get_3d(depth, INTRINSICS), mask, param, f"{DATA_DIR}/planes.ply")
 
 from depth_plane_est.save_pcd import save_normal
 save_normal(get_3d(depth, INTRINSICS), normal, f"{DATA_DIR}/normal.ply")
