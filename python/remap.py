@@ -14,7 +14,7 @@ with open(os.path.join(DATA_DIR, "camera_info.json"), "r") as f:
     
 print("INTRINSICS:", INTRINSICS)
 
-INDEX = 230
+INDEX = 390
 
 rgb = Image.open(os.path.join(DATA_DIR, "rgb", f"{INDEX}.png")).convert('RGB')
 depth = Image.open(os.path.join(DATA_DIR, "depth", f"{INDEX}.png"))
@@ -52,6 +52,15 @@ print(f"Linear rescale (1-5m): m = {m}, b = {b}")
 
 plot_rescale(depth[depth>0], metric3d_depth[depth>0], m, b, f"{DATA_DIR}/interval_best_fit.png")
 get_metrics(depth[depth>0], metric3d_depth[depth>0], m, b, f"{DATA_DIR}/interval_histogram.png")
+
+#RANSAC
+from linear_rescale import linear_rescale_ransac
+mask = depth > 0
+m, b = linear_rescale_ransac(depth[mask], metric3d_depth[mask])
+print(f"RANSAC rescale: m = {m}, b = {b}")
+
+plot_rescale(depth[depth>0], metric3d_depth[depth>0], m, b, f"{DATA_DIR}/ransac_best_fit.png")
+get_metrics(depth[depth>0], metric3d_depth[depth>0], m, b, f"{DATA_DIR}/ransac_histogram.png")
 
 # Planes
 mask, _ = get_planes(depth, normal, INTRINSICS, 5, 0.02)

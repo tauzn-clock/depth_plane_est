@@ -15,6 +15,34 @@ def linear_rescale(depth, est):
     
     return m, b
 
+def linear_rescale_ransac(depth, est, threshold=0.1, max_iterations=1000):
+    best_m, best_b = None, None
+    best_inliers_count = 0
+    
+    for _ in range(max_iterations):
+        # Randomly sample two points
+        indices = np.random.choice(len(est), size=2, replace=False)
+        x_sample = est[indices]
+        y_sample = depth[indices]
+        
+        # Fit line to the sampled points
+        A = np.vstack([x_sample, np.ones_like(x_sample)]).T
+        m, b = np.linalg.lstsq(A, y_sample, rcond=None)[0]
+        
+        # Calculate residuals
+        est_line = m * est + b
+        residuals = np.abs(depth - est_line)
+        
+        # Count inliers
+        inliers_count = np.sum(residuals < threshold)
+        
+        if inliers_count > best_inliers_count:
+            best_inliers_count = inliers_count
+            best_m, best_b = m, b
+            
+    return best_m, best_b
+
+
 def plot_rescale(depth, est, m, b, path):
     fig, ax = plt.subplots()
     
