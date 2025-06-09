@@ -14,7 +14,7 @@ with open(os.path.join(DATA_DIR, "camera_info.json"), "r") as f:
     
 print("INTRINSICS:", INTRINSICS)
 
-INDEX = 390
+INDEX = 230
 
 rgb = Image.open(os.path.join(DATA_DIR, "rgb", f"{INDEX}.png")).convert('RGB')
 depth = Image.open(os.path.join(DATA_DIR, "depth", f"{INDEX}.png"))
@@ -35,6 +35,11 @@ metric3d_normal = metric3d_normal * np.where(metric3d_normal[:,:,2]> 0, 1, -1)[.
 plt.imsave("metric3d_depth.png", metric3d_depth)
 plt.imsave("metric3d_normal.png", (metric3d_normal + 1) / 2.0)
 
+from depth_plane_est.process_depth import get_3d
+from depth_plane_est.save_pcd import save_pcd
+
+save_pcd(rgb, get_3d(depth, INTRINSICS), f"{DATA_DIR}/measured.ply")
+
 from linear_rescale import linear_rescale, plot_rescale, get_metrics
 
 # All points
@@ -44,6 +49,7 @@ print(f"Linear rescale (All): m = {m}, b = {b}")
 
 plot_rescale(depth[depth>0], metric3d_depth[depth>0], m, b, f"{DATA_DIR}/all_best_fit.png")
 get_metrics(depth[depth>0], metric3d_depth[depth>0], m, b,f"{DATA_DIR}/all_histogram.png")
+save_pcd(rgb, get_3d(m*metric3d_depth+b, INTRINSICS), f"{DATA_DIR}/all.ply")
 
 # Points between 1 and 5 m
 mask = (depth > 1) & (depth < 5)
@@ -52,6 +58,7 @@ print(f"Linear rescale (1-5m): m = {m}, b = {b}")
 
 plot_rescale(depth[depth>0], metric3d_depth[depth>0], m, b, f"{DATA_DIR}/interval_best_fit.png")
 get_metrics(depth[depth>0], metric3d_depth[depth>0], m, b, f"{DATA_DIR}/interval_histogram.png")
+save_pcd(rgb, get_3d(m*metric3d_depth+b, INTRINSICS), f"{DATA_DIR}/interval.ply")
 
 #RANSAC
 from linear_rescale import linear_rescale_ransac
@@ -61,13 +68,18 @@ print(f"RANSAC rescale: m = {m}, b = {b}")
 
 plot_rescale(depth[depth>0], metric3d_depth[depth>0], m, b, f"{DATA_DIR}/ransac_best_fit.png")
 get_metrics(depth[depth>0], metric3d_depth[depth>0], m, b, f"{DATA_DIR}/ransac_histogram.png")
+save_pcd(rgb, get_3d(m*metric3d_depth+b, INTRINSICS), f"{DATA_DIR}/ransac.ply")
 
 # Planes
-mask, _ = get_planes(depth, normal, INTRINSICS, 5, 0.02)
-mask = mask > 0
+mask, param = get_planes(depth, normal, INTRINSICS, 5, 0.02)
+selection_mask = mask > 0
 
-m, b = linear_rescale(depth[mask], metric3d_depth[mask])
+m, b = linear_rescale(depth[selection_mask], metric3d_depth[selection_mask])
 print(f"Linear rescale (Planes): m = {m}, b = {b}")
 
 plot_rescale(depth[depth>0], metric3d_depth[depth>0], m, b, f"{DATA_DIR}/planes_best_fit.png")
 get_metrics(depth[depth>0], metric3d_depth[depth>0], m, b, f"{DATA_DIR}/planes_histogram.png")
+save_pcd(rgb, get_3d(m*metric3d_depth+b, INTRINSICS), f"{DATA_DIR}/planes_matching.ply")
+
+from depth_plane_est.save_pcd import save_planes
+save_planes(get_3d(depth, INTRINSICS), mask, param, f"{DATA_DIR}/planes.ply")
