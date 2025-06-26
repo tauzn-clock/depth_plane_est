@@ -27,6 +27,7 @@ include_directories(
 add_executable(get_organised_pcd cpp/benchmark/get_organised_pcd.cpp)
 target_link_libraries(get_organised_pcd
   ${catkin_LIBRARIES}
+  ${OpenCV_LIBS}
   yaml-cpp
 )
 

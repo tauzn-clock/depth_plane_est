@@ -10,6 +10,7 @@
 #include "../utils/data_conversion.cpp"
 #include "../utils/math_utils.cpp"
 #include "../utils/normal.cpp"
+#include "../utils/visualise.cpp"
 
 #define VISUALISE true
 
@@ -66,7 +67,8 @@ void depthImageCallback(const sensor_msgs::Image::ConstPtr& msg){
     std::vector< std::array<float, 3> > img_normals = get_normal(points);
     centre_hemisphere(img_normals,gravity_vector);
 
-    
+    if (true) save_normal(img_normals, W, H, "/catkin_ws/src/depth_plane_est/normal.png");
+    ROS_INFO("Normal image saved");
 }
 
 int main(int argc, char** argv)

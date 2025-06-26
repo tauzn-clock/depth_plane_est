@@ -10,8 +10,8 @@
     
     <arg name="depth_img_topic" value="/camera/depth/image_raw"/>
     <arg name="depth_intrinsic_topic" value="/camera/depth/camera_info"/>
-    <arg name="yaml_file_path" value="/catkin_ws/src/gravity_plane_est/yaml/find_planes.yaml"/>
-    <node name="find_planes" pkg="gravity_plane_est" type="find_planes" output="screen">
+    <arg name="yaml_file_path" value="/catkin_ws/src/depth_plane_est/cpp/gravity_normal/find_planes.yaml"/>
+    <node name="gravity_normal" pkg="depth_plane_est" type="gravity_normal" output="screen">
         <param name="depth_img_topic" type="string" value="$(arg depth_img_topic)"/>
         <param name="depth_intrinsic_topic" type="string" value="$(arg depth_intrinsic_topic)"/>
         <param name="imu_filtered_topic" type="string" value="$(arg imu_filtered_topic)"/>
