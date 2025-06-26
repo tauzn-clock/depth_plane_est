@@ -25,7 +25,7 @@ Eigen::Quaternionf NormalToQuaternion(const Eigen::Vector3f& normal)
     return quaternion;
 }
 
-pcl::PointCloud<pcl::PointXYZRGB> DepthMsgToPointCloud(const sensor_msgs::Image::ConstPtr& msg, sensor_msgs::CameraInfo camera_info){
+pcl::PointCloud<pcl::PointXYZRGB> DepthMsgToPointCloud(const sensor_msgs::Image::ConstPtr& msg, sensor_msgs::CameraInfo camera_info, const float rescale_depth = 0.001){
 
     float fx = camera_info.K[0];
     float fy = camera_info.K[4];
@@ -60,7 +60,7 @@ pcl::PointCloud<pcl::PointXYZRGB> DepthMsgToPointCloud(const sensor_msgs::Image:
                 Z_int = msg->data[depth_idx] + (msg->data[depth_idx+1] << 8);
             }
 
-            float Z = 0.001 * Z_int;
+            float Z = rescale_depth * Z_int;
             depth_idx += 2; // Skip the second byte of the 16-bit depth value
 
             pt.x = ((float)u - cx) * Z / fx;

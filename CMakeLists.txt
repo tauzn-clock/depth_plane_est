@@ -40,3 +40,10 @@ add_executable(avg_imu cpp/gravity_normal/avg_imu.cpp)
 target_link_libraries(avg_imu
   ${catkin_LIBRARIES}
 )
+
+add_executable(gravity_normal cpp/gravity_normal/find_planes.cpp)
+target_link_libraries(gravity_normal
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBS}
+  yaml-cpp
+)
