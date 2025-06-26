@@ -96,7 +96,7 @@ void depthImageCallback(const sensor_msgs::Image::ConstPtr& msg)
     // Publish the point cloud
     sensor_msgs::PointCloud2 cloud_msg;
     pcl::toROSMsg(cloud, cloud_msg);
-    cloud_msg.header.frame_id = "map";
+    cloud_msg.header.frame_id = "camera_link";
     cloud_msg.header.stamp = ros::Time::now();
     cloud_pub.publish(cloud_msg);
 
