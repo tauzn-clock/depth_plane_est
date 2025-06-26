@@ -16,7 +16,6 @@
 #include "opencv2/opencv.hpp"
 
 #include "../utils/data_conversion.cpp"
-#include "../utils/hsv.cpp"
 #include <array>
 #include <math.h>
 #include <yaml-cpp/yaml.h>

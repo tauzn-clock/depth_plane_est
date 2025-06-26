@@ -21,6 +21,7 @@ catkin_package()
 # Include directories
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 add_executable(get_organised_pcd cpp/benchmark/get_organised_pcd.cpp)

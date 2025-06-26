@@ -9,7 +9,7 @@
 
 #include "../utils/data_conversion.cpp"
 #include "../utils/math_utils.cpp"
-//#include "../utils/normal.cpp"
+#include "../utils/normal.cpp"
 
 #define VISUALISE true
 
@@ -63,10 +63,10 @@ void depthImageCallback(const sensor_msgs::Image::ConstPtr& msg){
     std::array<float, 3> gravity_vector = {(float)imu.linear_acceleration.x, (float)imu.linear_acceleration.y, (float)imu.linear_acceleration.z};
     normalise(gravity_vector);
 
-    std::cout << points[0].x << " " << points[0].y << " " << points[0].z << std::endl;
-    ROS_INFO("Gravity vector: [%f, %f, %f]", points[1000].x, points[1000].y, points[1000].z);
-    //std::vector< std::array<float, 3> > img_normals = get_normal(points);
+    std::vector< std::array<float, 3> > img_normals = get_normal(points);
+    centre_hemisphere(img_normals,gravity_vector);
 
+    
 }
 
 int main(int argc, char** argv)

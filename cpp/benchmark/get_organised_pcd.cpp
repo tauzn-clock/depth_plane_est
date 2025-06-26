@@ -13,7 +13,7 @@
 #include <pcl/features/integral_image_normal.h>
 
 #include "../utils/data_conversion.cpp"
-#include "../utils/hsv.cpp"
+#include "../utils/visualise.cpp"
 #include <array>
 #include <yaml-cpp/yaml.h>
 
@@ -88,12 +88,12 @@ void depthImageCallback(const sensor_msgs::Image::ConstPtr& msg)
     for(int i=0; i<cluster_indices.size(); i++)
     {
         //ROS_INFO("Cluster %d Size: %zu", i, cluster_indices[i].indices.size());
-        std::array<float, 3> color = GetHSVColor(i, cluster_indices.size());
+        std::array<int, 3> color = hsv(i, cluster_indices.size());
         for (auto index : cluster_indices[i].indices)
         {
-            cloud[index].r = (int)(color[0] * 255);
-            cloud[index].g = (int)(color[1] * 255);
-            cloud[index].b = (int)(color[2] * 255);
+            cloud[index].r = (int)color[0];
+            cloud[index].g = (int)color[1];
+            cloud[index].b = (int)color[2];
         }
     }
 

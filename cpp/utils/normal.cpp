@@ -2,21 +2,19 @@ std::vector<std::array<float,3> > get_normal(pcl::PointCloud<pcl::PointXYZRGB> p
     
     int W = pcd.width;
     int H = pcd.height;
-
-    auto point = pcd.z;
     
     std::vector<std::array<float,3> > up(W*H), down(W*H), left(W*H), right(W*H);
     
     for (int i = 0; i < H; ++i) {
         for (int j = 0; j < W; ++j) {
             int index = i * W + j;
-            if (i > 0) up[index] = points[index - W];
+            if (i > 0) up[index] = {pcd[index - W].x, pcd[index - W].y, pcd[index - W].z};
             else up[index] = {0, 0, 0};
-            if (i < (H - 1)) down[index] = points[index + W];
+            if (i < (H - 1)) down[index] = {pcd[index + W].x, pcd[index + W].y, pcd[index + W].z};
             else down[index] = {0, 0, 0};
-            if (j > 0) left[index] = points[index - 1];
+            if (j > 0) left[index] = {pcd[index - 1].x, pcd[index - 1].y, pcd[index - 1].z};
             else left[index] = {0, 0, 0};
-            if (j < (W - 1)) right[index] = points[index + 1];
+            if (j < (W - 1)) right[index] = {pcd[index + 1].x, pcd[index + 1].y, pcd[index + 1].z};
             else right[index] = {0, 0, 0};
         }
     }
@@ -27,7 +25,7 @@ std::vector<std::array<float,3> > get_normal(pcl::PointCloud<pcl::PointXYZRGB> p
         for (int j = 0; j < W; ++j) {
             int index = i * W + j;
 
-            if (points[index][2]==0){
+            if (pcd[index].z==0){
                 normal[index] = {0,0,0};
                 continue;
             }
@@ -43,4 +41,16 @@ std::vector<std::array<float,3> > get_normal(pcl::PointCloud<pcl::PointXYZRGB> p
     }
 
     return normal;
+}
+
+void centre_hemisphere(std::vector<std::array<float,3> >& normal, std::array<float, 3> grav){    
+
+    for (int i=0; i < normal.size(); ++i){
+        if (dot(normal[i],grav) < 0){
+            normal[i][0] *= -1;
+            normal[i][1] *= -1;
+            normal[i][2] *= -1;
+        }
+    }
+    
 }
