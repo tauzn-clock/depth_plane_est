@@ -35,3 +35,8 @@ target_link_libraries(get_ahc_pcd
   ${OpenCV_LIBS}
   yaml-cpp
 )
+
+add_executable(avg_imu cpp/gravity_normal/avg_imu.cpp)
+target_link_libraries(avg_imu
+  ${catkin_LIBRARIES}
+)
