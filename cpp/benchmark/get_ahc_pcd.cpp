@@ -15,8 +15,8 @@
 #include "ahc/AHCPlaneFitter.hpp"
 #include "opencv2/opencv.hpp"
 
-#include "data_conversion.cpp"
-#include "hsv.cpp"
+#include "../utils/data_conversion.cpp"
+#include "../utils/hsv.cpp"
 #include <array>
 #include <math.h>
 #include <yaml-cpp/yaml.h>
@@ -144,6 +144,7 @@ int main(int argc, char** argv)
 
 	std::string yaml_path;
     nh.getParam("get_ahc_pcd/yaml_path", yaml_path);
+	std::cout << "YAML file path: " << yaml_path << std::endl;
     config = YAML::LoadFile(yaml_path);
 
     ros::Subscriber camera_info_sub = nh.subscribe("/camera/depth/camera_info", 1, cameraInfoCallback);

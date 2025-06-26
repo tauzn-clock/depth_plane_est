@@ -1,5 +1,5 @@
 <launch>
-  <arg name="yaml_path" default="$(find depth_plane_est)/benchmark/ahc.yaml"/>
+  <arg name="yaml_path" default="$(find depth_plane_est)/cpp/benchmark/ahc.yaml"/>
 
   <!-- Launch the camera info subscriber node -->
   <node name="get_ahc_pcd" pkg="depth_plane_est" type="get_ahc_pcd" output="screen">

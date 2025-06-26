@@ -23,13 +23,13 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(get_organised_pcd benchmark/get_organised_pcd.cpp)
+add_executable(get_organised_pcd cpp/benchmark/get_organised_pcd.cpp)
 target_link_libraries(get_organised_pcd
   ${catkin_LIBRARIES}
   yaml-cpp
 )
 
-add_executable(get_ahc_pcd benchmark/get_ahc_pcd.cpp)
+add_executable(get_ahc_pcd cpp/benchmark/get_ahc_pcd.cpp)
 target_link_libraries(get_ahc_pcd 
   ${catkin_LIBRARIES}
   ${OpenCV_LIBS}

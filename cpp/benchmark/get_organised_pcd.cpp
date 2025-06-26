@@ -12,8 +12,8 @@
 #include <pcl/io/pcd_io.h>
 #include <pcl/features/integral_image_normal.h>
 
-#include "data_conversion.cpp"
-#include "hsv.cpp"
+#include "../utils/data_conversion.cpp"
+#include "../utils/hsv.cpp"
 #include <array>
 #include <yaml-cpp/yaml.h>
 
@@ -119,7 +119,8 @@ int main(int argc, char** argv)
     ros::NodeHandle nh;
 
 	std::string yaml_path;
-    nh.getParam("get_ahc_pcd/yaml_path", yaml_path);
+    nh.getParam("get_organised_pcd/yaml_path", yaml_path);
+    std::cout << "YAML file path: " << yaml_path << std::endl;
     config = YAML::LoadFile(yaml_path);
 
     ros::Subscriber camera_info_sub = nh.subscribe("/camera/depth/camera_info", 1, cameraInfoCallback);
