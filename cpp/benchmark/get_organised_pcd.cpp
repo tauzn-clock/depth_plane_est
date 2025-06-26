@@ -30,17 +30,19 @@ void cameraInfoCallback(const sensor_msgs::CameraInfo::ConstPtr& msg)
 void depthImageCallback(const sensor_msgs::Image::ConstPtr& msg)
 {
     // Print out depth image info
+    /*
     ROS_INFO("Received Depth Image:");
     ROS_INFO("Width: %d, Height: %d", msg->width, msg->height);
     ROS_INFO("Encoding: %s", msg->encoding.c_str());
     ROS_INFO("Is Bigendian? %s", msg->is_bigendian ? "True" : "False");
     ROS_INFO("Step: %d", msg->step);
     ROS_INFO("Data Size: %zu", msg->data.size());
+    */
 
     // Create a point cloud
     pcl::PointCloud<pcl::PointXYZRGB> cloud = DepthMsgToPointCloud(msg, camera_info);
 
-    ROS_INFO("Point Cloud Size: %zu", cloud.size());
+    //ROS_INFO("Point Cloud Size: %zu", cloud.size());
 
     // Normal Estimate
     pcl::PointCloud<pcl::Normal> normal;
@@ -74,16 +76,18 @@ void depthImageCallback(const sensor_msgs::Image::ConstPtr& msg)
     seg.segment(models, cluster_indices,centroids, covariances, labels, label_indices);
     
     // Print out the number of planes found
+    /*
     ROS_INFO("Number of planes found: %zu", models.size());
     for(auto model : models)
     {
         ROS_INFO("Model Coefficients: %f %f %f %f", model.values[0], model.values[1], model.values[2], model.values[3]);
     }
+    */
 
     // Print out the number of indexes in each cluster
     for(int i=0; i<cluster_indices.size(); i++)
     {
-        ROS_INFO("Cluster %d Size: %zu", i, cluster_indices[i].indices.size());
+        //ROS_INFO("Cluster %d Size: %zu", i, cluster_indices[i].indices.size());
         std::array<float, 3> color = GetHSVColor(i, cluster_indices.size());
         for (auto index : cluster_indices[i].indices)
         {

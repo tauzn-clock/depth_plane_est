@@ -64,17 +64,19 @@ void cameraInfoCallback(const sensor_msgs::CameraInfo::ConstPtr& msg)
 void depthImageCallback(const sensor_msgs::Image::ConstPtr& msg)
 {
     // Print out depth image info
+	/*
     ROS_INFO("Received Depth Image:");
     ROS_INFO("Width: %d, Height: %d", msg->width, msg->height);
     ROS_INFO("Encoding: %s", msg->encoding.c_str());
     ROS_INFO("Is Bigendian? %s", msg->is_bigendian ? "True" : "False");
     ROS_INFO("Step: %d", msg->step);
     ROS_INFO("Data Size: %zu", msg->data.size());
+	*/
 
     // Create a point cloud
     pcl::PointCloud<pcl::PointXYZRGB> cloud = DepthMsgToPointCloud(msg, camera_info);
 
-    ROS_INFO("Point Cloud Size: %zu", cloud.size());
+    //ROS_INFO("Point Cloud Size: %zu", cloud.size());
 
     /////////////////////////////// Initializing Plane Segmentation Parameters ////////////////////////////////////
     ahc::PlaneFitter<OrganizedImage3D<pcl::PointXYZRGB>> pf;
@@ -104,7 +106,7 @@ void depthImageCallback(const sensor_msgs::Image::ConstPtr& msg)
 	//cloud.header.frame_id = "map";
 	OrganizedImage3D<pcl::PointXYZRGB> Ixyz(cloud);
 	std::vector<std::vector<int>> plane_vertices;
-	pf.run(&Ixyz, &plane_vertices, &seg); // Perform plane segmentation
+	pf.run(&Ixyz, &plane_vertices, &seg, 0, false); // Perform plane segmentation
 
 	pcl::PointCloud<pcl::PointXYZRGB> xyzrgb(cloud.width, cloud.height);
 
