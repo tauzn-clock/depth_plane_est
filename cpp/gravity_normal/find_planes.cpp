@@ -11,6 +11,8 @@
 #include "../utils/math_utils.cpp"
 #include "../utils/normal.cpp"
 #include "../utils/visualise.cpp"
+#include "../utils/correct_vector.cpp"
+#include "../utils/find_peaks.cpp"
 
 #define VISUALISE true
 
@@ -69,7 +71,10 @@ void depthImageCallback(const sensor_msgs::Image::ConstPtr& msg){
 
     //save_normal(img_normals, W, H, "/catkin_ws/src/depth_plane_est/normal.png");
 
-    
+    correct_vector(img_normals, gravity_vector, config["dot_bound"].as<float>(), config["correction_iteration"].as<int>());
+    centre_hemisphere(img_normals,gravity_vector);
+
+    std::vector<int> mask = find_peaks(img_normals, points, gravity_vector, config["dot_bound"].as<float>(), config["kernel_size"].as<int>(), config["cluster_size"].as<int>());
 }
 
 int main(int argc, char** argv)
