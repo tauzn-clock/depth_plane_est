@@ -63,7 +63,9 @@ void depthImageCallback(const sensor_msgs::Image::ConstPtr& msg){
     std::array<float, 3> gravity_vector = {(float)imu.linear_acceleration.x, (float)imu.linear_acceleration.y, (float)imu.linear_acceleration.z};
     normalise(gravity_vector);
 
-    //std::vector< std::array<float, 3> > img_normals = get_normal(points, W, H);
+    std::cout << points[0].x << " " << points[0].y << " " << points[0].z << std::endl;
+    ROS_INFO("Gravity vector: [%f, %f, %f]", points[1000].x, points[1000].y, points[1000].z);
+    //std::vector< std::array<float, 3> > img_normals = get_normal(points);
 
 }
 
@@ -76,12 +78,12 @@ int main(int argc, char** argv)
     ros::NodeHandle nh;
 
     std::string imu_topic, depth_img_topic, depth_intrinsic_topic;
-    nh.getParam("imu_topic", imu_topic);
-    nh.getParam("depth_img_topic", depth_img_topic);
-    nh.getParam("depth_intrinsic_topic", depth_intrinsic_topic);
+    nh.getParam("find_planes/imu_topic", imu_topic);
+    nh.getParam("find_planes/depth_img_topic", depth_img_topic);
+    nh.getParam("find_planes/depth_intrinsic_topic", depth_intrinsic_topic);
 
     std::string yaml_file_path;
-    nh.getParam("yaml_file_path", yaml_file_path);
+    nh.getParam("find_planes/yaml_file_path", yaml_file_path);
     std::cout << "YAML file path: " << yaml_file_path << std::endl;
     config = YAML::LoadFile(yaml_file_path);
 
@@ -89,7 +91,7 @@ int main(int argc, char** argv)
     ros::Subscriber depth_img_sub = nh.subscribe(depth_img_topic, 24, depthImageCallback);
     ros::Subscriber camera_info_sub = nh.subscribe(depth_intrinsic_topic, 1, depthIntrinsicCallback);
 
-    cloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/masked_pcd", 1);
+    cloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/grav_normals", 1);
 
     // Spin to keep the node alive
     ros::spin();
