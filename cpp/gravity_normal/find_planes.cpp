@@ -67,8 +67,9 @@ void depthImageCallback(const sensor_msgs::Image::ConstPtr& msg){
     std::vector< std::array<float, 3> > img_normals = get_normal(points);
     centre_hemisphere(img_normals,gravity_vector);
 
-    if (true) save_normal(img_normals, W, H, "/catkin_ws/src/depth_plane_est/normal.png");
-    ROS_INFO("Normal image saved");
+    //save_normal(img_normals, W, H, "/catkin_ws/src/depth_plane_est/normal.png");
+
+    
 }
 
 int main(int argc, char** argv)
@@ -80,12 +81,12 @@ int main(int argc, char** argv)
     ros::NodeHandle nh;
 
     std::string imu_topic, depth_img_topic, depth_intrinsic_topic;
-    nh.getParam("find_planes/imu_topic", imu_topic);
-    nh.getParam("find_planes/depth_img_topic", depth_img_topic);
-    nh.getParam("find_planes/depth_intrinsic_topic", depth_intrinsic_topic);
+    nh.getParam("gravity_normal/imu_topic", imu_topic);
+    nh.getParam("gravity_normal/depth_img_topic", depth_img_topic);
+    nh.getParam("gravity_normal/depth_intrinsic_topic", depth_intrinsic_topic);
 
     std::string yaml_file_path;
-    nh.getParam("find_planes/yaml_file_path", yaml_file_path);
+    nh.getParam("gravity_normal/yaml_file_path", yaml_file_path);
     std::cout << "YAML file path: " << yaml_file_path << std::endl;
     config = YAML::LoadFile(yaml_file_path);
 

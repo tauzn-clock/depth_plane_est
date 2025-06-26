@@ -14,7 +14,7 @@
     <node name="gravity_normal" pkg="depth_plane_est" type="gravity_normal" output="screen">
         <param name="depth_img_topic" type="string" value="$(arg depth_img_topic)"/>
         <param name="depth_intrinsic_topic" type="string" value="$(arg depth_intrinsic_topic)"/>
-        <param name="imu_filtered_topic" type="string" value="$(arg imu_filtered_topic)"/>
+        <param name="imu_topic" type="string" value="$(arg imu_filtered_topic)"/>
         <param name="yaml_file_path" type="string" value="$(arg yaml_file_path)"/>
     </node>
 
