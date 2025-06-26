@@ -1,3 +1,6 @@
 [submodule "process_rosbag"]
 	path = process_rosbag
 	url = https://github.com/tauzn-clock/process_rosbag
+[submodule "Depth-Anything-V2"]
+	path = Depth-Anything-V2
+	url = https://github.com/DepthAnything/Depth-Anything-V2
