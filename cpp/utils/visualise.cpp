@@ -43,7 +43,6 @@ void save_normal(std::vector<std::array<float, 3> > normal, int W, int H, std::s
     cv::imwrite(path,image);
 }
 
-/*
 void save_mask(std::vector<int> mask, int W, int H, std::string path){
     cv::Mat image(H,W,CV_8UC3, cv::Scalar(0));
 
@@ -61,4 +60,3 @@ void save_mask(std::vector<int> mask, int W, int H, std::string path){
 
     cv::imwrite(path,image);
 }
-*/

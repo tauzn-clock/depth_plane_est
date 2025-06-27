@@ -1,4 +1,4 @@
-rescale_depth : 1000.0
+rescale_depth : 0.001
 dot_bound : 0.9
 correction_iteration : 5
 kernel_size : 21
