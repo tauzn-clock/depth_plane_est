@@ -60,3 +60,23 @@ void save_mask(std::vector<int> mask, int W, int H, std::string path){
 
     cv::imwrite(path,image);
 }
+
+void save_cluster(std::vector<int> bin, int W, int H, std::string path){
+    cv::Mat image(H,W,CV_8UC3, cv::Scalar(0));
+
+    int max_bin = *std::max_element(bin.begin(), bin.end());
+
+    for (int i = 0; i < H; ++i) {
+        for (int j = 0; j < W; ++j) {
+            int index = i * W + j;
+            float ratio = (float)bin[index] / max_bin;
+            image.at<cv::Vec3b>(i,j) = cv::Vec3b(
+                (int)(ratio * 255), 
+                (int)(ratio * 255), 
+                (int)(ratio * 255)
+            );  // Grayscale representation
+        }
+    }
+
+    cv::imwrite(path,image);
+}

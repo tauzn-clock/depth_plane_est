@@ -49,3 +49,10 @@ target_link_libraries(gravity_normal
   ${OpenCV_LIBS}
   yaml-cpp
 )
+
+add_executable(all_normal cpp/all_normal/find_planes.cpp)
+target_link_libraries(all_normal
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBS}
+  yaml-cpp
+)
