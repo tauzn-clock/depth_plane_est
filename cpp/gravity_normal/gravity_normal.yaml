@@ -3,3 +3,4 @@ dot_bound : 0.9
 correction_iteration : 5
 kernel_size : 21
 cluster_size : 5
+plane_ratio : 0.01

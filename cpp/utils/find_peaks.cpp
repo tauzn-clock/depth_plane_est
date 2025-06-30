@@ -4,7 +4,8 @@ std::vector<int> find_peaks(
     std::array<float,3> grav,
     float bound,
     int kernel_size,
-    int cluster_size
+    int cluster_size,
+    float plane_ratio = 0.02
 ){
     std::vector<float> dist(normal.size());
 
@@ -45,24 +46,34 @@ std::vector<int> find_peaks(
         }
     }
 
-    int PLANE_CNT = 4;
-
     std::partial_sort(
-        store_index.begin(), store_index.begin() + std::min((int)store_index.size(),PLANE_CNT), store_index.end(),
+        store_index.begin(), store_index.begin(), store_index.end(),
         [](const std::pair<int,int>& a, const std::pair<int,int>& b) {
             return a.second > b.second;  // Sort in descending order
         }
     );
 
+    /*
+    for(int i=0; i<store_index.size(); i++){
+        std::cout << "Cluster " << i+1 << ": Index = " << store_index[i].first 
+                  << ", Count = " << store_index[i].second 
+                  << ", Distance = " << (store_index[i].first * CLUSTER_SIZE + smallest) 
+                  << " m" << std::endl;
+    }
+    std::cout<<"\n";
+    */
+
     std::vector<int> mask(normal.size());
 
-    for(int i=0; i<mask.size(); i++){
-        if (dist[i]!=0){
-            int index_i = (int)((dist[i]-smallest)/CLUSTER_SIZE);
-            for(int j=0; j<std::min((int)store_index.size(),PLANE_CNT); j++){
-                if (index_i>=store_index[j].first-kernel_size/2 && index_i<=store_index[j].first+kernel_size/2){
-                    mask[i] = j+1;
-                    break;
+    for(int i=0; i<(int)store_index.size(); i++){
+        if (store_index[i].second < plane_ratio * normal.size()) {
+            break; // Skip clusters that are too small
+        }
+        for(int j=0; j<normal.size(); j++){
+            if (dist[j] != 0 && mask[j] == 0) { 
+                int index_j = (int)((dist[j]-smallest)/CLUSTER_SIZE);
+                if (index_j >= store_index[i].first - kernel_size/2 && index_j <= store_index[i].first + kernel_size/2) {
+                    mask[j] = i + 1; // Assign cluster index (1-based)
                 }
             }
         }

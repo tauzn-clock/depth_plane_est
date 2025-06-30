@@ -75,7 +75,7 @@ void depthImageCallback(const sensor_msgs::Image::ConstPtr& msg){
     correct_vector(img_normals, gravity_vector, config["dot_bound"].as<float>(), config["correction_iteration"].as<int>());
     centre_hemisphere(img_normals,gravity_vector);
 
-    std::vector<int> mask = find_peaks(img_normals, points, gravity_vector, config["dot_bound"].as<float>(), config["kernel_size"].as<int>(), config["cluster_size"].as<int>());
+    std::vector<int> mask = find_peaks(img_normals, points, gravity_vector, config["dot_bound"].as<float>(), config["kernel_size"].as<int>(), config["cluster_size"].as<int>(), config["plane_ratio"].as<float>());
 
     //save_mask(mask, W, H, "/catkin_ws/src/depth_plane_est/mask.png");
     //ROS_INFO("Mask saved to /catkin_ws/src/depth_plane_est/mask.png");
