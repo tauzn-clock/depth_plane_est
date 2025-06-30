@@ -6,3 +6,4 @@ cluster_size : 5
 plane_ratio : 0.01
 angle_bins: 36
 angle_kernel_size: 5
+directions_selected: 3

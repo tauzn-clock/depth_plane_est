@@ -54,6 +54,14 @@ void depthImageCallback(const sensor_msgs::Image::ConstPtr& msg){
     centre_hemisphere(img_normals, z_axis);
 
     std::vector< std::pair<int, std::array<float, 3> > > cardinal_directions = cluster_normal(img_normals, config["angle_bins"].as<int>(), config["angle_kernel_size"].as<int>());
+
+    for (int i=0; i<min(config["directions_selected"].as<int>(), (int)cardinal_directions.size()); i++) {
+        std::array<float, 3> normal = cardinal_directions[i].second;
+        normalise(normal);
+        cardinal_directions[i].second = normal;
+
+
+    }
 }
 
 int main(int argc, char** argv)
