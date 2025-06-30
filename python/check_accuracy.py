@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 
-DATA_DIR = "/scratchdata/processed/alcove2"
+DATA_DIR = "/scratchdata/processed/outdoor_highres_unfiltered"
 
 with open(os.path.join(DATA_DIR, "camera_info.json"), "r") as f:
     data = json.load(f)
@@ -12,7 +12,7 @@ with open(os.path.join(DATA_DIR, "camera_info.json"), "r") as f:
     
 print("INTRINSICS:", INTRINSICS)
 
-INDEX = 0
+INDEX = 390
 
 rgb = Image.open(os.path.join(DATA_DIR, "rgb", f"{INDEX}.png")).convert('RGB')
 depth = Image.open(os.path.join(DATA_DIR, "depth", f"{INDEX}.png"))
@@ -40,12 +40,12 @@ if True:
 
 # Rescale method
 from linear_rescale import linear_rescale, plot_rescale, get_metrics
+from depth_plane_est.process_depth import get_normal_adj, get_normal_svd
+from depth_plane_est.get_planes import get_planes
 
-#RANSAC
-from linear_rescale import linear_rescale_ransac
 mask = depth > 0
-m, b = linear_rescale_ransac(depth[mask], metric3d_depth[mask])
-print(f"RANSAC rescale: m = {m}, b = {b}")
+m, b = linear_rescale(depth[mask], metric3d_depth[mask])
+print(f"Linear rescale (All): m = {m}, b = {b}")
 
 def check_range(depth, rescale, bound):
     print(depth.shape)
