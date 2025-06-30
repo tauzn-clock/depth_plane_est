@@ -54,8 +54,6 @@ void depthImageCallback(const sensor_msgs::Image::ConstPtr& msg){
     centre_hemisphere(img_normals, z_axis);
 
     cluster_normal(img_normals, config["angle_bins"].as<int>());
-
-    ROS_INFO("%f", M_PI);
 }
 
 int main(int argc, char** argv)
