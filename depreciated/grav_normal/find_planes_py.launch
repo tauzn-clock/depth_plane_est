@@ -1,0 +1,11 @@
+<launch>
+  <param name="imu_topic" value="/camera/gyro_accel/sample"/>
+  <param name="imu_filtered_topic" value="/imu_filtered"/>
+  <param name="max_store" value="50"/>
+  <node name="avg_imu" pkg="gravity_plane_est" type="avg_imu" output="screen"/>
+  
+  <param name="depth_img_topic" value="/camera/depth/image_raw"/>
+  <param name="depth_intrinsic_topic" value="/camera/depth/camera_info"/>
+  <param name="pointcloud_topic" value="/ground_planes"/>
+  <node name="find_planes" pkg="gravity_plane_est" type="find_planes.py" output="screen"/>
+</launch>
