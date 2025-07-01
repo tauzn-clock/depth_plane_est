@@ -3,7 +3,7 @@ dot_bound : 0.9
 correction_iteration : 5
 kernel_size : 21
 cluster_size : 5
-plane_ratio : 0.01
-angle_bins: 36
+plane_ratio : 0.001
+angle_bins: 41
 angle_kernel_size: 5
 directions_selected: 3

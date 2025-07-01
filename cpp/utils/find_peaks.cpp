@@ -20,7 +20,7 @@ std::vector<int> find_peaks(
         }
     }
 
-    //Cluster in cm bins
+    //Cluster in m bins
     float CLUSTER_SIZE = 0.01;
 
     std::vector<int> bins((int)((largest-smallest)/CLUSTER_SIZE)+1);
@@ -67,7 +67,7 @@ std::vector<int> find_peaks(
 
     for(int i=0; i<(int)store_index.size(); i++){
         if (store_index[i].second < plane_ratio * normal.size()) {
-            break; // Skip clusters that are too small
+            break; // Break if clusters become too small
         }
         for(int j=0; j<normal.size(); j++){
             if (dist[j] != 0 && mask[j] == 0) { 

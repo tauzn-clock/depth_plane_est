@@ -62,7 +62,8 @@ void depthImageCallback(const sensor_msgs::Image::ConstPtr& msg){
         
         centre_hemisphere(img_normals,normal);
         correct_vector(img_normals, normal, config["dot_bound"].as<float>(), config["correction_iteration"].as<int>());
-    
+        centre_hemisphere(img_normals,normal);
+
         std::vector<int> mask = find_peaks(img_normals, points, normal, config["dot_bound"].as<float>(), config["kernel_size"].as<int>(), config["cluster_size"].as<int>(), config["plane_ratio"].as<float>());
         
         int mask_max = 0;
