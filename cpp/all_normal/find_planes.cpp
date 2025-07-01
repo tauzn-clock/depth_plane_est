@@ -54,14 +54,46 @@ void depthImageCallback(const sensor_msgs::Image::ConstPtr& msg){
     centre_hemisphere(img_normals, z_axis);
 
     std::vector< std::pair<int, std::array<float, 3> > > cardinal_directions = cluster_normal(img_normals, config["angle_bins"].as<int>(), config["angle_kernel_size"].as<int>());
-
-    for (int i=0; i<min(config["directions_selected"].as<int>(), (int)cardinal_directions.size()); i++) {
+    std::vector<int> global_mask = std::vector<int>(W*H, 0);
+    int global_mask_max = 0;
+    for (int i=0; i<std::min(config["directions_selected"].as<int>(), (int)cardinal_directions.size()); i++) {
         std::array<float, 3> normal = cardinal_directions[i].second;
         normalise(normal);
-        cardinal_directions[i].second = normal;
-
-
+        
+        centre_hemisphere(img_normals,normal);
+        correct_vector(img_normals, normal, config["dot_bound"].as<float>(), config["correction_iteration"].as<int>());
+    
+        std::vector<int> mask = find_peaks(img_normals, points, normal, config["dot_bound"].as<float>(), config["kernel_size"].as<int>(), config["cluster_size"].as<int>(), config["plane_ratio"].as<float>());
+        
+        int mask_max = 0;
+        for (int j = 0; j < mask.size(); ++j) {
+            if (global_mask[j] == 0 && mask[j] > 0) {
+                global_mask[j] = mask[j] + global_mask_max; // Ensure background is not counted
+                mask_max = std::max(mask_max, mask[j]);
+            }
+        }
+        global_mask_max += mask_max;
     }
+
+    // Color points based on the mask
+    for (int i = 0; i < points.size(); ++i) {
+        if (global_mask[i] == 0) {
+            points[i].r = 0;
+            points[i].g = 0;
+            points[i].b = 0; // Black for background
+            continue;
+        }
+        std::array<int,3> color = hsv(global_mask[i]-1, global_mask_max);
+        points[i].r = color[0];
+        points[i].g = color[1];
+        points[i].b = color[2];
+    }
+
+    sensor_msgs::PointCloud2 cloud_msg;
+    pcl::toROSMsg(points, cloud_msg);
+    cloud_msg.header.frame_id = "camera_link";
+    cloud_msg.header.stamp = ros::Time::now();
+    cloud_pub.publish(cloud_msg);
 }
 
 int main(int argc, char** argv)
