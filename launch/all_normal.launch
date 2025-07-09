@@ -1,7 +1,7 @@
 <launch>
     <arg name="depth_img_topic" value="/camera/depth/image_raw"/>
     <arg name="depth_intrinsic_topic" value="/camera/depth/camera_info"/>
-    <arg name="yaml_file_path" value="/catkin_ws/src/depth_plane_est/cpp/all_normal/all_normal.yaml"/>
+    <arg name="yaml_file_path" value="$(find depth_plane_est)/cpp/all_normal/all_normal.yaml"/>
     <node name="all_normal" pkg="depth_plane_est" type="all_normal" output="screen">
         <param name="depth_img_topic" type="string" value="$(arg depth_img_topic)"/>
         <param name="depth_intrinsic_topic" type="string" value="$(arg depth_intrinsic_topic)"/>
