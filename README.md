@@ -112,4 +112,39 @@ roslaunch depth_plane_est benchmark_organised.launch
 Uses the Organised Multiplane Segmentation algorithm from PCL library.
 
 Launchfile parameters:
+- `depth_img_topic`: Depth image topic. Default is `/camera/depth/image_raw`.
+- `depth_intrinsic_topic`: Depth camera intrinsics topic. Default is `/camera/depth/camera_info`.
 - `yaml_file`: YAML file containing parameters for the plane estimator. Default is `/catkin_ws/src/depth_plane_est/cpp/organised_plane/organised.yaml`.
+
+YAML file parameters:
+- `normal_max_depth_change_factor`: Maximum depth change factor for setMaxDepthChangeFactor. Default is 0.1.
+- `normal_normal_smoothing_size`: Maximum normal smoothing size for setNormalSmoothingSize. Default is 10.0.
+- `segment_min_inliers`: Minimum number of inliers for setMinInliers. Default is 5000.
+- `segment_angle_threshold`: Angle threshold for setAngleThreshold. Default is 0.05.
+- `segment_distance_threshold`: Distance threshold for setDistanceThreshold. Default is 0.05.
+- `segment_maximum_curvature`: Maximum curvature for setMaximumCurvature. Default is 0.01.
+- `normal_visualise`: Renders normal at a fraction of the points. WARNING: This is very slow. Default is false.
+
+Output PCD Topic: `/camera/organised_pcd`
+
+Output PCD Frame: `camera_link`
+
+### AHC Plane Estimator
+
+```
+roslaunch depth_plane_est benchmark_ahc.launch
+```
+
+Use Agglomerative Hierarchical Clustering (AHC) algorithm from [https://www.merl.com/publications/docs/TR2014-066.pdf](https://www.merl.com/publications/docs/TR2014-066.pdf).
+
+Launchfile parameters:
+- `yaml_path`: YAML file containing parameters for the plane estimator. Default is `/catkin
+_ws/src/depth_plane_est/cpp/benchmark/ahc.yaml`.
+- `depth_img_topic`: Depth image topic. Default is `/camera/depth/image_raw`.
+- `depth_intrinsic_topic`: Depth camera intrinsics topic. Default is `/camera/depth/camera_info`.
+
+YAML parameter not used. Change parameters in namespace `global_para` (Line 50 at `get_ahc_pcd.cpp`).
+
+Output PCD Topic: `/camera/ahc_pcd`
+
+Output PCD Frame: `camera_link`
