@@ -143,13 +143,16 @@ int main(int argc, char** argv)
     // Create a node handle
     ros::NodeHandle nh;
 
-	std::string yaml_path;
+	std::string yaml_path, depth_img_topic, depth_intrinsic_topic;
     nh.getParam("get_ahc_pcd/yaml_path", yaml_path);
+	nh.getParam("get_ahc_pcd/depth_img_topic", depth_img_topic);
+	nh.getParam("get_ahc_pcd/depth_intrinsic_topic", depth_intrinsic_topic);
+
 	std::cout << "YAML file path: " << yaml_path << std::endl;
     config = YAML::LoadFile(yaml_path);
 
-    ros::Subscriber camera_info_sub = nh.subscribe("/camera/depth/camera_info", 1, cameraInfoCallback);
-    ros::Subscriber depth_image_sub = nh.subscribe("/camera/depth/image_raw", 10, depthImageCallback);
+    ros::Subscriber camera_info_sub = nh.subscribe(depth_intrinsic_topic, 1, cameraInfoCallback);
+    ros::Subscriber depth_image_sub = nh.subscribe(depth_img_topic, 10, depthImageCallback);
 
     cloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/camera/ahc_pcd", 1);
 

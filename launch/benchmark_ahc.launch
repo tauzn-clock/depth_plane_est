@@ -1,8 +1,12 @@
 <launch>
   <arg name="yaml_path" default="$(find depth_plane_est)/cpp/benchmark/ahc.yaml"/>
+  <arg name="depth_img_topic" default="/camera/depth/image_raw"/>
+  <arg name="depth_intrinsic_topic" default="/camera/depth/camera_info"/>
 
   <!-- Launch the camera info subscriber node -->
   <node name="get_ahc_pcd" pkg="depth_plane_est" type="get_ahc_pcd" output="screen">
     <param name="yaml_path" type="string" value="$(arg yaml_path)"/>
+    <param name="depth_img_topic" type="string" value="$(arg depth_img_topic)"/>
+    <param name="depth_intrinsic_topic" type="string" value="$(arg depth_intrinsic_topic)"/>
   </node>
 </launch>
