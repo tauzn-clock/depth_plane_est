@@ -37,8 +37,8 @@ std::vector< std::pair<int, std::array<float, 3> > > cluster_normal(std::vector<
                 float angle_y = (j + 0.5f) / angle_bins * M_PI - M_PI / 2;
 
                 std::array<float, 3> normal = {
-                    std::tan2(angle_x),
-                    std::tan2(angle_y),
+                    std::tan(angle_x),
+                    std::tan(angle_y),
                     1,
                 };
 
