@@ -54,7 +54,7 @@ Start the ROS master node with a running camera node or playback of a rosbag fil
 ### Gravity Normal Plane Estimator
 
 ```
-roslaunch depth_plane_est gravity_normal_plane_estimator.launch
+roslaunch depth_plane_est gravity_normal.launch
 ```
 
 Launchfile parameters:
@@ -65,14 +65,51 @@ Launchfile parameters:
 - `depth_intrinsic_topic`: Depth camera intrinsics topic. Default is `/camera/depth/camera_info`.
 - `yaml_file`: YAML file containing parameters for the plane estimator. Default is `/catkin_ws/src/depth_plane_est/cpp/gravity_normal/gravity_normal.yaml`.
 
-Yaml file parameters:
+YAML file parameters:
 - `rescale_depth`: Rescale factor for depth readings. Default is 0.001.
-- `dot_bound`: Threshold for dot product when selecting for normal vectors during gravity vector correction. Default is 0.9.
+- `dot_bound`: Dot product threshold when selecting normal vectors used for gravity vector correction. Default is 0.9.
 - `correction_iteration`: Number of iterations for gravity vector correction. Default is 5.
-- `kernel_size`: Size of the kernel used for peak detection. Default is 21.
-- `cluster_size`: Cluster size of points belonging to plane. Default is 5.
+- `kernel_size`: Size of the kernel used for peak detection when finding planes normal to gravity. Default is 21.
+- `cluster_size`: Cluster size of points centred around each peak. Default is 5.
 - `plane_ratio`: Minimum number of points as ratio of overall image size (H*W). Default is 0.01.
 
 Output PCD Topic: `/grav_normals_pcd`
 
 Output PCD Frame: `camera_link`
+
+### All Normal Plane Estimator
+
+```
+roslaunch depth_plane_est all_normal.launch
+```
+
+Launchfile parameters:
+- `depth_img_topic`: Depth image topic. Default is `/camera/depth/image_raw`.
+- `depth_intrinsic_topic`: Depth camera intrinsics topic. Default is `/camera/depth/camera_info`.
+- `yaml_file`: YAML file containing parameters for the plane estimator. Default is `/catkin_ws/src/depth_plane_est/cpp/all_normal/all_normal.yaml`.
+
+YAML file parameters:
+- `rescale_depth`: Rescale factor for depth readings. Default is 0.001.
+- `angle_bins`: Number of angle bins used to discretise angles around the x and y axis. Default is 41.
+- `angle_kernel_size`: Size of the kernel used for peak detection when finding cardinal vectors. Default is 5.
+- `directions_selected`: Number of cardinal vectors selected. Default is 3.
+- `dot_bound`: Dot product threshold when selecting normal vectors used for each cardinal vector correction. Default is 0.9.
+- `correction_iteration`: Number of iterations for gravity vector correction. Default is 5.
+- `kernel_size`: Size of the kernel used for peak detection when finding planes normal to each cardinal vector. Default is 21.
+- `cluster_size`: Cluster size of points centred around each peak. Default is 5.
+- `plane_ratio`: Minimum number of points as ratio of overall image size (H*W). Default is 0.001.
+
+Output PCD Topic: `/all_normals_pcd`
+
+Output PCD Frame: `camera_link`
+
+### Organised Plane Estimator
+
+```
+roslaunch depth_plane_est benchmark_organised.launch
+```
+
+Uses the Organised Multiplane Segmentation algorithm from PCL library.
+
+Launchfile parameters:
+- `yaml_file`: YAML file containing parameters for the plane estimator. Default is `/catkin_ws/src/depth_plane_est/cpp/organised_plane/organised.yaml`.
